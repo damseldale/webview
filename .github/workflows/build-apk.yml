@@ -1,0 +1,40 @@
+name: Mesin Pembuat APK
+
+# Bagian ini adalah 'saklar' agar mesin bisa dinyalakan dari luar (Vercel)
+on:
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: 'Nama Aplikasi'
+        required: true
+        default: 'TokoSaya'
+      web_url:
+        description: 'URL Website Klien'
+        required: true
+        default: 'https://google.com'
+
+jobs:
+  build-apk:
+    name: Proses Pembuatan APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Tarik Kode Template
+        uses: actions/checkout@v4
+
+      - name: 2. Siapkan Komputer Java/Android
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: 3. (Nanti) Skrip Ubah Nama & URL
+        run: echo "Sedang mengubah nama menjadi ${{ github.event.inputs.app_name }} dan URL ke ${{ github.event.inputs.web_url }}..."
+
+      - name: 4. (Nanti) Build APK
+        run: echo "Proses build berjalan..." 
+        # Nanti kode aslinya seperti: bash ./gradlew assembleDebug
+
+      - name: 5. (Nanti) Simpan Hasil APK
+        run: echo "Menyimpan file APK agar bisa didownload."
+        # Nanti menggunakan actions/upload-artifact@v4
