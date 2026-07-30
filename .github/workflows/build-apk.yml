@@ -1,6 +1,5 @@
 name: Mesin Pembuat APK
 
-# Bagian ini adalah 'saklar' agar mesin bisa dinyalakan dari luar (Vercel)
 on:
   workflow_dispatch:
     inputs:
@@ -22,19 +21,26 @@ jobs:
       - name: 1. Tarik Kode Template
         uses: actions/checkout@v4
 
-      - name: 2. Siapkan Komputer Java/Android
+      - name: 2. Siapkan Komputer Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
+          
+      - name: 3. Beri Izin Eksekusi Gradle
+        run: chmod +x ./gradlew
 
-      - name: 3. (Nanti) Skrip Ubah Nama & URL
-        run: echo "Sedang mengubah nama menjadi ${{ github.event.inputs.app_name }} dan URL ke ${{ github.event.inputs.web_url }}..."
+      - name: 4. Suntikkan Nama Aplikasi & URL Klien ke dalam Kode
+        # Ini adalah proses 'Find and Replace' otomatis menggunakan perintah Linux 'sed'
+        run: |
+          sed -i "s|TEMPLATE_NAMA_APP|${{ github.event.inputs.app_name }}|g" app/src/main/res/values/strings.xml
+          sed -i "s|TEMPLATE_URL_WEB|${{ github.event.inputs.web_url }}|g" app/src/main/java/com/domain/anda/MainActivity.java
 
-      - name: 4. (Nanti) Build APK
-        run: echo "Proses build berjalan..." 
-        # Nanti kode aslinya seperti: bash ./gradlew assembleDebug
+      - name: 5. Mulai Merakit APK (Build Process)
+        run: ./gradlew assembleDebug
 
-      - name: 5. (Nanti) Simpan Hasil APK
-        run: echo "Menyimpan file APK agar bisa didownload."
-        # Nanti menggunakan actions/upload-artifact@v4
+      - name: 6. Simpan File APK yang Sudah Jadi
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.inputs.app_name }}-app
+          path: app/build/outputs/apk/debug/app-debug.apk
