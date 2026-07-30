@@ -34,7 +34,7 @@ jobs:
         # Ini adalah proses 'Find and Replace' otomatis menggunakan perintah Linux 'sed'
         run: |
           sed -i "s|TEMPLATE_NAMA_APP|${{ github.event.inputs.app_name }}|g" app/src/main/res/values/strings.xml
-          sed -i "s|TEMPLATE_URL_WEB|${{ github.event.inputs.web_url }}|g" app/src/main/java/com/domain/anda/MainActivity.java
+          sed -i "s|TEMPLATE_URL_WEB|${{ github.event.inputs.web_url }}|g" app/src/main/java/com//example/app/MainActivity.java
 
       - name: 5. Mulai Merakit APK (Build Process)
         run: ./gradlew assembleDebug
